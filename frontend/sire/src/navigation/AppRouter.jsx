@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 // TODO: Implement these files
-// import Home from "../screens/Home"
+import Home from "../screens/Home"
 // import Signup from "../screens/Signup"
 // import Login from "../screens/Login"
 
