@@ -1,0 +1,53 @@
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import "./Carousel.css";
+
+export default function HomeCarousel() {
+    return (
+        <div className="carousel-wrapper">
+            <HomeCarousel
+                autoplay
+                infiniteLoop
+                showThumbs={false}
+                showStatus={false}
+                interval={5000}
+                >
+                    <div className="slide">
+                        <img src="" alt="About Slide" />
+                        <div className="slide-overlay">
+                            <h2>Welcome to S.I.R.E.</h2>
+                            <p>Your comprehensive safety solution.</p>
+                        </div>
+                    </div>
+                    <div className="slide">
+                        <img src="" alt="Fire Incident Slide" />
+                        <div className="slide-overlay">
+                            <h2>Fire Incident - Scenario</h2>
+                            <p>A sudden fire breaks out, creating a fast-moving unpredictable situation. Responders must act quickly to assess hazards and protect lives.</p>
+                        </div>
+                    </div>
+                    <div className="slide">
+                        <img src="../assets/images/ActiveThreat.jpg" alt="Active Threat Slide" />
+                        <div className="slide-overlay">
+                            <h2>Active Threat - Scenario</h2>
+                            <p>An active shooter or other immediate threat scenario requires rapid response and coordination to ensure safety and minimize harm.</p>
+                        </div>
+                    </div>
+                    <div className="slide">
+                        <img src="" alt="Medical Emergency Slide" />
+                        <div className="slide-overlay">
+                            <h2>Medical Emergency - Scenario</h2>
+                            <p>A medical emergency requires immediate response and coordination to provide life-saving care and stabilize the patient.</p>
+                        </div>
+                    </div>
+                    <div className="slide">
+                        <img src="" alt="Structural Failure Slide" />
+                        <div className="slide-overlay">
+                            <h2>Structural Failure - Scenario</h2>
+                            <p>A structural failure requires immediate assessment and response to ensure safety and prevent further damage.</p>
+                        </div>
+                    </div>
+            </HomeCarousel>
+        </div>
+    );
+}
