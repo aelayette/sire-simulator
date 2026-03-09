@@ -1,9 +1,11 @@
+
+import React from "react";
 import Grid from "@mui/material/Grid";
 import Footer from "../../components/Footer";
 import "./HomeLayout.css";
 
 export default function HomeLayout({ children }) {
-    const [loginBtn, signupBtn, carousel] = children;
+    const [loginBtn, signupBtn, carousel] = React.Children.toArray(children);
 
     return (
         <Grid container spacing={0} className="home-container">
