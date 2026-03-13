@@ -6,7 +6,6 @@ export default function Home() {
     return (
         <HomeLayout>
             <Button text="Login" to="/login" />
-            <Button text="Signup" to="/signup" />
             <HomeCarousel />
         </HomeLayout>
     )

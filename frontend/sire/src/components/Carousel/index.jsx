@@ -2,9 +2,9 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./Carousel.css";
 
-import About from "../../assets/images/About.jpg";
+import About from "../../assets/images/About.png";
 import ActiveThreat from "../../assets/images/ActiveThreat.png";
-import FireIncident from "../../assets/images/FireIncident.jpg";
+import FireIncident from "../../assets/images/FireIncident.png";
 import MedicalEmergency from "../../assets/images/MedicalEmergency.png";
 import StructuralFailure from "../../assets/images/StructuralFailure.png";
 
@@ -24,10 +24,7 @@ export default function HomeCarousel() {
                 >
                     <div className="slide">
                         <img src={About} alt="About Slide" />
-                        <div className="slide-overlay">
-                            <h2>Welcome to S.I.R.E.</h2>
-                            <p>Your comprehensive safety solution.</p>
-                        </div>
+                        <div className="slide-overlay"></div>
                     </div>
                     <div className="slide">
                         <img src={FireIncident} alt="Fire Incident Slide" />

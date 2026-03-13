@@ -30,7 +30,15 @@
     width: 100%;
 }
 
+.carousel .slide img:first-of-type {
+    filter: brightness(100%);
+
+}
+
 .slide-overlay {
+    background: rgb(0, 0, 0);
+    border-radius: 10px;
+    border: 1px solid rgb(200, 40, 40);
     bottom: 15%;
     color: rgb(255, 255, 255);
     left: 10%;
