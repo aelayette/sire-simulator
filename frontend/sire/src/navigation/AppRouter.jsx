@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "../screens/Home"
 import Signup from "../screens/Signup"
 import Login from "../screens/Login"
+import Login from "../screens/Role"
 
 export default function AppRouter() {
     return (
@@ -11,6 +12,7 @@ export default function AppRouter() {
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/role" element={<Role />} />
         </Routes>
     );
 }
