@@ -38,7 +38,7 @@ export default function Role() {
     if (!role) {
         return (
             <RoleLayout>
-                <Button text="Admin" to="/admin" />
+                <Button text="Admin" to="/create-session" />
                 <Button text="Trainee" to="/trainee" />
             </RoleLayout>
         )
