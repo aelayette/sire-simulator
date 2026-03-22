@@ -1,8 +1,17 @@
+/** 
+ * Author: Leon Wasiliew 
+ * Last Update: 2026-03-21
+ * Description: Styles for the Role screen layout, including split-screen
+ * sections for Administrator and Trainee options, layout structure, and typography.
+ */
+
+/** Main container for role selection layout. */
 .role-container {
     height: 100vh;
     overflow: hidden;
 }
 
+/** Left section (Administrator role). */
 .role-left {
     background: rgb(0, 0, 0);
     border: 1px solid rgb(24, 24, 24);
@@ -16,12 +25,14 @@
     overflow: hidden;
 }
 
+/** Shared content wrapper for role sections. */
 .left-content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
+/** Right section (Trainee role). */
 .role-right {
     background: rgb(0, 0, 0);
     border: 1px solid rgb(24, 24, 24);
@@ -35,7 +46,7 @@
     overflow: hidden;
 }
 
-
+/** Text content styling. */
 .about-section {
     line-height: 1.5;
     word-spacing: 0.1em;

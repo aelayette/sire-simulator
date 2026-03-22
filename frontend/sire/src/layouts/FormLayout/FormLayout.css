@@ -1,3 +1,11 @@
+/** 
+ * Author: Leon Wasiliew 
+ * Last Update: 2026-03-21
+ * Description: Styles for authentication forms including layout, input fields,
+ * and responsive structure for Login and Signup screens.
+ */
+
+/** Main container for the form layout. */
 .form-container {
     display: flex;
     flex-direction: column;
@@ -5,6 +13,7 @@
     overflow: hidden;
 }
 
+/** Left section (branding & information panel). */
 .form-left {
     background: rgb(0, 0, 0);
     color: rgb(255, 255, 255);
@@ -15,10 +24,12 @@
     padding: 4rem 2rem;
 }
 
+/** Subtitle text styling. */
 .subtitle {
     opacity: 0.8;
 }
 
+/** Right section (input panel). */
 .form-right {
     align-items: flex-start;
     background: rgb(36, 36, 36);
@@ -29,35 +40,42 @@
     padding: 4rem;
 }
 
+/** Wrapper for form content. */
 .form-content {
     width: 100%;
     max-width: 400px;
+    margin-top: 5rem;
 }
 
+/** Signup form layout. */
 .signup-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
+/** Login form layout. */
 .login-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
+/** Individual form group (label & input). */
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
+/** Form labels. */
 .form-group label {
     color: rgb(221, 221, 221);
     font-size: 1rem;
     font-weight: 500;
 }
 
+/** Input fields. */
 .form-group input {
     background: rgb(31, 31, 31);
     border: 1px solid rgb(136, 136, 136);
@@ -67,11 +85,13 @@
     padding: 0.75rem;
 }
 
+/** Input focus state. */
 .form-group input:focus {
     outline: none;
     border-color: rgb(200, 40, 40);
 }
 
+/** Autofill styling override (browser consistency). */
 .form-group input:-webkit-autofill,
 .form-group input:-webkit-autofill:hover,
 .form-group input:-webkit-autofill:focus {
@@ -82,13 +102,9 @@
     transition: background-color 9999s ease-in-out 0s;
 }
 
-/* .footer-container {
+/** Footer container below the form. */
+.footer-container {
     background: rgb(26, 26, 26);
     height: 25vh;
     padding: 0 0;
 }
-
-.app-footer {
-    background-color: rgb(136, 136, 136);
-    border-top: 1px solid rgb(136, 136, 136);
-} */
