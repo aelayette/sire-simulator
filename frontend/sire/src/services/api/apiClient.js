@@ -1,5 +1,14 @@
+/** 
+ * Author: Leon Wasiliew 
+ * Last Update: 2026-03-21
+ * Description: Handles HTTP requests, including base URL configuration, authentication headers,
+ * error handling, and response parsing for authentication.
+ */
+
+// Base URL for API requests (configured via Vite environment variables)
 const API_BASE = import.meta.env.VITE_API_BASE?.replace(/\/$/, "") || "http://localhost:8080/api";
 
+/** Function that retrieves the stored authentication token from localStorage. */
 function getAuthToken() {
     return localStorage.getItem("authToken");
 }
@@ -22,11 +31,19 @@ async function request(endpoint, options = {}) {
         headers,
     });
 
-    const text = await response.text();           // Reads response as text to handle both JSON and non-JSON responses
-    const data = text ? JSON.parse(text) : null;  // Parses response text as JSON if it exists
+    const text = await response.text();  // Reads response as text to handle both JSON and non-JSON responses
+
+    // Parses response data safely
+    let data = null;
+    try {
+        data = text ? JSON.parse(text) : null;
+    }
+    catch {
+        data = text;  // Assigns fallback if response is not valid JSON
+    }
     
     if (!response.ok) {
-        const errorMessage = data?.message || `${response.status} ${response.statusText}` || "Unknown API error";
+        const errorMessage = (typeof data === "object" && data?.message) || `${response.status} ${response.statusText}` || "Unknown API error";
         const error = new Error(errorMessage);  // Creates an Error object with the message from the response
         error.status = response.status;         // Attaches the HTTP status code to the error object
         error.data = data;                      // Attaches the response data to the Error object for additional context
@@ -41,18 +58,18 @@ export default {
     
     /** Method for making GET requests. */
     get(endpoint) {
-        return request(endpoint, { method : "GET" });
+        return request(endpoint, { method: "GET" });
     },
     /** Method for making POST requests. */
     post(endpoint, body) {
-        return request(endpoint, { method : "POST", body: JSON.stringify(body) });
+        return request(endpoint, { method: "POST", body: JSON.stringify(body) });
     },
     /** Method for making PUT requests. */
     put(endpoint, body) {
-        return request(endpoint, { method : "PUT", body: JSON.stringify(body) });
+        return request(endpoint, { method: "PUT", body: JSON.stringify(body) });
     },
     /** Method for making DELETE requests. */
     delete(endpoint) {
-        return request(endpoint, { method : "DELETE" });
+        return request(endpoint, { method: "DELETE" });
     },
 };

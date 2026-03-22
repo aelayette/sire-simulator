@@ -1,10 +1,20 @@
-import { use, useState } from "react";
+/** 
+ * Author: Leon Wasiliew 
+ * Last Update: 2026-03-21
+ * Description: Signup screen of the application.
+ * Allows the user to create a new account by entering the required credentials.
+ * Performs client-side validation and communicates with the backend API.
+ */
+
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { signup } from "../../services/api/auth";
+import { signup } from "../../services/api/api";
 import FormLayout from "../../layouts/FormLayout";
 import Button from "../../components/Button";
 
+/** Function that returns the Signup component for handling user registration, and API communication. */
 export default function Signup() {
+
     /** Constants for form state management. */
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -15,7 +25,7 @@ export default function Signup() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    /** Asynchronous function to handle signup logic. */
+    /** Asynchronous function to handle signup form submission. */
     async function handleSignup(e) {
         e.preventDefault();  // Prevents form submission and page reload
         setError("");        // Clears previous error messages
@@ -48,7 +58,7 @@ export default function Signup() {
         setLoading(true); // Starts loading state
 
         try {
-            await signup({ username, email, password });  // Calls the signup API with user data
+            await signup({ email, password, username });  // Calls the signup API with user data
             setOk("Account created. Please log in.");     // Sets success message
             navigate("/login");                           // Redirects to login page after successful signup
         }
@@ -63,7 +73,8 @@ export default function Signup() {
     return (
         <FormLayout>
             <form className="signup-form" onSubmit={handleSignup}>
-                {/* Form group for username input that updates the username state on change. */}
+
+                {/** Username input. */}
                 <div className="form-group">
                     <label htmlFor="username">Username*</label>
                     <input 
@@ -74,7 +85,8 @@ export default function Signup() {
                         required
                         placeholder="Enter your username..."/>
                 </div>
-                {/* Form group for email input that updates the email state on change. */}
+
+                {/** Email input. */}
                 <div className="form-group">
                     <label htmlFor="email">Email*</label>
                     <input 
@@ -85,7 +97,8 @@ export default function Signup() {
                         required
                         placeholder="Enter your email..."/>
                 </div>
-                {/* Form group for password input that updates the password state on change. */}
+
+                {/** Password input. */}
                 <div className="form-group">
                     <label htmlFor="password">Password*</label>
                     <input 
@@ -96,7 +109,8 @@ export default function Signup() {
                         required
                         placeholder="Enter your password..."/>
                 </div>
-                {/* Form group for confirm password input that updates the confirm password state on change. */}
+
+                {/* Confirm password input. */}
                 <div className="form-group">
                     <label htmlFor="confirm-password">Confirm Password*</label>
                     <input 
@@ -107,12 +121,18 @@ export default function Signup() {
                         required
                         placeholder="Confirm your password..."/>
                 </div>
-                {/* Links to login page for users who already have an account. */}
+
+                {/* Login redirect. */}
                 <div className="form-group">
-                    <p>Already have an account? <Link to="/login">Login here</Link></p>
+                    <p>Already have an account? <a href="/login">Login here</a></p>
                 </div>
+
+                {/* Error message. */}
                 {error && <div className="error">{error}</div>}
+
+                {/* Success message. */}
                 {ok && <div className="success">{ok}</div>}
+
                 {/* Submit button for the signup form.*/}
                 <Button text={loading ? "Creating account..." : "Signup"} type="submit"/>
             </form>
