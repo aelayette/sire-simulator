@@ -11,6 +11,7 @@ import Signup from "../screens/Signup"
 import Login from "../screens/Login"
 import Role from "../screens/Role"
 import CreateSession from "../screens/CreateSession"
+import JoinSession from "../screens/JoinSession"
 
 /** Function that returns the AppRouter component for handling client-side routing. */
 export default function AppRouter() {
@@ -21,6 +22,7 @@ export default function AppRouter() {
             <Route path="/login" element={<Login />} />
             <Route path="/role" element={<Role />} />
             <Route path="/create-session" element={<CreateSession />} />
+            <Route path="/join-session" element={<JoinSession />} />
         </Routes>
     );
 }
