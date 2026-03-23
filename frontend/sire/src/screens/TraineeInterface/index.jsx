@@ -7,7 +7,7 @@
 
 import { useState } from "react";
 import TraineeInterfaceLayout from "../../layouts/TraineeInterfaceLayout";
-import scenarioData from "..../data/scenario.json";  // NOTE: Replace this
+// import scenarioData from "../../data/scenario.json";  // NOTE: Replace this
 
 /** Function that returns the TraineeInterface component. */
 export default function TraineeInterface() {

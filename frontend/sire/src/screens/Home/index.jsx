@@ -19,7 +19,7 @@ export default function Home() {
             <Button text="Login" to="/login" />
 
             {/** Navigation button. */}
-            <Button text="Admin" to="/admin-dashboard" />
+            <Button text="Role" to="/role" />
 
             {/** Main carousel content. */}
             <HomeCarousel />

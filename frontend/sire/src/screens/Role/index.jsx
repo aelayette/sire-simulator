@@ -8,8 +8,6 @@
 
 import { useState } from "react";
 import RoleLayout from "../../layouts/RoleLayout";
-// import Admin from "../Admin";
-// import Trainee from "../Trainee";
 import Button from "../../components/Button";
 
 /** Function that returns the Role component for handling role selection. */

@@ -9,6 +9,7 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import Footer from "../../components/Footer";
+import About from "../../assets/images/About.png";
 import "./RoleLayout.css";
 
 /** Function that returns the RoleLayout component for selecting user roles. */
@@ -17,30 +18,37 @@ export default function RoleLayout({ children }) {
 
     return (
         <div>
-
-            {/** Header section. */}
-            <div>
-                <h1>S.I.R.E.</h1>
-                <h2>Select Your Role</h2>
-            </div>
-
             {/** Role selection layout. */}
             <Grid container spacing={0} className="role-container">
 
-                {/** Left section (Administrator role). */}
-                <Grid size={{ xs: 12, sm: 6 }}>
+                {/** Left section (). */}
+                <Grid size={{ xs: 12, sm: 3 }}>
+                    {/** Header section. */}
                     <div className="role-left">
                         <div className="left-content">
-                            {adminBtn}
+                            <img src={About} alt="S.I.R.E. Logo" />
+                            <h2>Select Your Role</h2>
                         </div>
                     </div>
                 </Grid>
 
-                {/** Right section (Trainee role). */}
-                <Grid size={{ xs: 12, sm: 6 }}>
+                {/** Right section (Administrator & Trainee cards). */}
+                <Grid size={{ xs: 12, sm: 9 }}>
                     <div className="role-right">
-                        <div className="left-content">
-                            {traineeBtn}
+                        <div className="right-content">
+                            <div className="admin-container">
+                                <div key={1} className="admin-card" onClick={() => to="/admin-dashboard"}></div>
+                                <h2>Admin</h2>
+                                <p>Be the one to create and manage the scenarios...</p>
+                                <hr />
+                                {adminBtn}
+                            </div>
+                            <div className="trainee-card">
+                                <h2>Trainee</h2>
+                                <p>Be the one to participate in the scenarios...</p>
+                                <hr />
+                                {traineeBtn}
+                            </div>
                         </div>
                     </div>
                 </Grid>
