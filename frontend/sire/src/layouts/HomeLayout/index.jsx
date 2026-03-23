@@ -14,7 +14,7 @@ import "./HomeLayout.css";
 
 /** Function that returns the HomeLayout component that structures the Home screen content. */
 export default function HomeLayout({ children }) {
-    const [loginBtn, adminBtn, carousel] = React.Children.toArray(children);
+    const [loginBtn, roleBtn, carousel] = React.Children.toArray(children);
 
     return (
         <Grid container spacing={0} className="home-container">
@@ -29,7 +29,7 @@ export default function HomeLayout({ children }) {
                         {loginBtn}
 
                         {/** Navigation (admin button). */}
-                        {adminBtn}
+                        {roleBtn}
 
                         {/** About section. */}
                         <div className="about-section">

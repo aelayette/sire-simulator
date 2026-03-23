@@ -46,8 +46,12 @@
     overflow: hidden;
 }
 
-/** Text content styling. */
-.about-section {
-    line-height: 1.5;
-    word-spacing: 0.1em;
+/** Shared content wrapper for role sections. */
+.right-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    margin: auto;
+    gap: 1.5rem;
 }
