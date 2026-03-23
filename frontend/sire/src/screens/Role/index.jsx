@@ -39,7 +39,7 @@ export default function Role() {
         return (
             <RoleLayout>
                 <Button text="Admin" to="/create-session" />
-                <Button text="Trainee" to="/trainee" />
+                <Button text="Trainee" to="/join-session" />
             </RoleLayout>
         )
     }
