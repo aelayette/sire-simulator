@@ -18,6 +18,9 @@ export default function Home() {
             {/** Navigation button. */}
             <Button text="Login" to="/login" />
 
+            {/** Navigation button. */}
+            <Button text="Admin" to="/admin-dashboard" />
+
             {/** Main carousel content. */}
             <HomeCarousel />
         </HomeLayout>
