@@ -3,7 +3,7 @@ name: Deploy SIRE Landing Page to GitHub Pages
 on:
   push:
     branches:
-      - dev
+      - main
   workflow_dispatch:
 
 permissions:
@@ -24,8 +24,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: dev
 
       - name: Prepare pages artifact
         run: cp SIRE.html index.html
