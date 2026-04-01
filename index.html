@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SIRE – Simulated Incident Response Environment. Real-time, multi-user emergency training simulator built with Node.js, Socket.IO, and React." />
+  <meta property="og:title" content="SIRE – Simulated Incident Response Environment" />
+  <meta property="og:description" content="Real-time, multi-user emergency training simulator. 20+ scenarios. WebSocket-driven. Deploy in minutes." />
+  <meta property="og:type" content="website" />
+  <title>SIRE – Simulated Incident Response Environment</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0c10;
+      --surface:   #111318;
+      --border:    #1e2230;
+      --accent:    #e84040;
+      --accent2:   #ff6b35;
+      --text:      #e8eaf0;
+      --muted:     #7a8099;
+      --code-bg:   #161b22;
+      --radius:    10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 56px;
+      background: rgba(10,12,16,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; text-decoration: none !important; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% -10%, rgba(232,64,64,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(255,107,53,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(232,64,64,0.12);
+      border: 1px solid rgba(232,64,64,0.3);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 99px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p.subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none !important;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #c93535; transform: translateY(-1px); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--muted); background: var(--surface); transform: translateY(-1px); }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .hero-meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+    /* ── SECTION WRAPPER ── */
+    .section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(232,64,64,0.35); transform: translateY(-2px); }
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(232,64,64,0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+    .feature-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .feature-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── SCENARIOS ── */
+    .scenarios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    .scenario-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--muted);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .scenario-chip:hover { color: var(--text); border-color: var(--muted); }
+    .scenario-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-red    { background: #e84040; }
+    .dot-orange { background: #ff6b35; }
+    .dot-blue   { background: #4a9eff; }
+    .dot-green  { background: #3ecf8e; }
+
+    /* ── TECH STACK ── */
+    .stack-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .stack-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      color: var(--text);
+    }
+
+    /* ── QUICK START ── */
+    .qs-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .qs-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 0 1rem;
+      gap: 0;
+    }
+    .qs-tab {
+      padding: 0.6rem 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: inherit;
+    }
+    .qs-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+    .qs-content { display: none; padding: 1.5rem; }
+    .qs-content.active { display: block; }
+    pre {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.85rem;
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .comment { color: #5c6670; }
+    .cmd     { color: #3ecf8e; }
+    .kw      { color: #ff6b35; }
+    .str     { color: #a5d6a7; }
+
+    /* ── ARCHITECTURE ── */
+    .arch-diagram {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 2;
+      overflow-x: auto;
+    }
+    .arch-box {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .arch-box.red    { border-color: #e84040; color: #e84040; }
+    .arch-box.blue   { border-color: #4a9eff; color: #4a9eff; }
+    .arch-box.green  { border-color: #3ecf8e; color: #3ecf8e; }
+    .arch-box.orange { border-color: #ff6b35; color: #ff6b35; }
+    .arch-arrow { color: var(--muted); margin: 0 0.5rem; }
+
+    /* ── API PREVIEW ── */
+    .api-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .api-card {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .api-method {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: monospace;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+      letter-spacing: 0.04em;
+    }
+    .method-get    { background: rgba(74,158,255,0.15); color: #4a9eff; }
+    .method-post   { background: rgba(62,207,142,0.15); color: #3ecf8e; }
+    .method-delete { background: rgba(232,64,64,0.15);  color: #e84040; }
+    .api-path {
+      font-family: monospace;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .api-desc { font-size: 0.83rem; color: var(--muted); margin-top: 0.4rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--text); }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--border); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .hero { padding: 3.5rem 1.25rem 3rem; }
+      .section { padding: 3rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <span class="nav-logo"><span>SIRE</span> Simulator</span>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#scenarios">Scenarios</a></li>
+    <li><a href="#quickstart">Quick Start</a></li>
+    <li><a href="#api">API</a></li>
+    <li><a href="https://github.com/aelayette/sire-simulator" class="nav-cta">GitHub →</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="badge">
+    <!-- signal icon -->
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M7.76 7.76a6 6 0 0 0 0 8.49"/><path d="M20.07 4.93a10 10 0 0 1 0 14.14"/><path d="M3.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    Real-Time Training Platform
+  </div>
+  <h1>Simulate the Crisis.<br /><span>Train for Reality.</span></h1>
+  <p class="subtitle">
+    SIRE is an open-source, multi-user emergency training simulator that delivers live incident scenarios to trainees via WebSockets — built for instructors who need realistic, repeatable drills.
+  </p>
+  <div class="hero-actions">
+    <a href="https://github.com/aelayette/sire-simulator" class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      View on GitHub
+    </a>
+    <a href="#quickstart" class="btn btn-secondary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Quick Start
+    </a>
+  </div>
+  <div class="hero-meta">
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Node.js · React · Socket.IO
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Multi-User Sessions
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      20+ Scenarios
+    </span>
+    <span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      MIT License
+    </span>
+  </div>
+</header>
+
+<hr class="divider" />
+
+<!-- ── FEATURES ── -->
+<section class="section" id="features">
+  <h2 class="section-title">Built for Drill Realism</h2>
+  <p class="section-sub">Everything an instructor needs to run credible, high-fidelity incident exercises.</p>
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Real-Time Event Streaming</h3>
+      <p>Scenario events are pushed live over Socket.IO with configurable time offsets, keeping every participant synchronized during an exercise.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🧑‍💼</div>
+      <h3>Dual-Role Architecture</h3>
+      <p>Separate <strong>Instructor</strong> and <strong>Trainee</strong> views. Instructors control session flow; trainees receive and respond to unfolding incidents.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>Progressive Escalation</h3>
+      <p>Each scenario unfolds in timed stages — from initial alert through full escalation — mirroring how real incidents develop.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h3>Zero-Infrastructure Sessions</h3>
+      <p>In-memory session store means nothing to configure. Spin up a session, share the code, and trainees join instantly from any device.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h3>API Key Auth & Audit Logs</h3>
+      <p>Optional API key enforcement, ticket ID tracking, and structured audit logging built in — ready for enterprise compliance requirements.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🚀</div>
+      <h3>One-Click Deploy</h3>
+      <p>Pre-configured for Railway, Render, Heroku, and Docker. Go from clone to live training environment in under five minutes.</p>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── SCENARIOS ── -->
+<section class="section" id="scenarios">
+  <h2 class="section-title">20+ Incident Scenarios</h2>
+  <p class="section-sub">Covering the full spectrum of real-world emergency types your organization may face.</p>
+  <div class="scenarios-grid">
+    <div class="scenario-chip"><span class="dot dot-red"></span>Active Aggressor</div>
+    <div class="scenario-chip"><span class="dot dot-red"></span>Bomb Threat</div>
+    <div class="scenario-chip"><span class="dot dot-red"></span>Suspicious Person</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Cardiac Event</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Anaphylaxis</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Overdose</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Stroke</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Seizure</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Diabetic Emergency</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Penetrating Injury</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Motor Vehicle Collision</div>
+    <div class="scenario-chip"><span class="dot dot-orange"></span>Fall Injury</div>
+    <div class="scenario-chip"><span class="dot dot-blue"></span>Fire &amp; Evacuation</div>
+    <div class="scenario-chip"><span class="dot dot-green"></span>Flood</div>
+    <div class="scenario-chip"><span class="dot dot-green"></span>Power Outage</div>
+    <div class="scenario-chip"><span class="dot dot-green"></span>Severe Weather</div>
+    <div class="scenario-chip"><span class="dot dot-green"></span>Hazmat Spill</div>
+    <div class="scenario-chip"><span class="dot dot-green"></span>+ More</div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── ARCHITECTURE ── -->
+<section class="section" id="architecture">
+  <h2 class="section-title">How It Works</h2>
+  <p class="section-sub">A clean client-server split, real-time events, and stateless session storage.</p>
+  <div class="arch-diagram">
+    <div style="margin-bottom:1.5rem;">
+      <span class="arch-box blue">React Client</span>
+      <span class="arch-arrow">⟵ Socket.IO ⟶</span>
+      <span class="arch-box red">Express + Socket.IO Server</span>
+      <span class="arch-arrow">⟶</span>
+      <span class="arch-box orange">In-Memory Store</span>
+    </div>
+    <div style="font-size:0.8rem; color: var(--muted); display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;">
+      <span>
+        <span style="color:#4a9eff">Instructor</span> creates session → shares code<br/>
+        <span style="color:#3ecf8e">Trainees</span> join by session code<br/>
+        Server streams scenario events in real time
+      </span>
+      <span>
+        <span style="color:#ff6b35">REST API</span> manages session lifecycle<br/>
+        <span style="color:#e84040">WebSocket</span> delivers live incident updates<br/>
+        No database — just run and train
+      </span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── TECH STACK ── -->
+<section class="section" id="stack">
+  <h2 class="section-title">Tech Stack</h2>
+  <p class="section-sub">Modern, lightweight, and dependency-minimal.</p>
+  <div style="margin-bottom:1rem;">
+    <p style="font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.6rem;">Backend</p>
+    <div class="stack-row">
+      <span class="stack-tag">Node.js 20+</span>
+      <span class="stack-tag">Express 4</span>
+      <span class="stack-tag">Socket.IO 4</span>
+      <span class="stack-tag">NanoID</span>
+      <span class="stack-tag">Morgan</span>
+      <span class="stack-tag">CORS</span>
+    </div>
+  </div>
+  <div style="margin-bottom:1rem;">
+    <p style="font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.6rem;">Frontend</p>
+    <div class="stack-row">
+      <span class="stack-tag">React 19</span>
+      <span class="stack-tag">React Router 7</span>
+      <span class="stack-tag">Material-UI 7</span>
+      <span class="stack-tag">Vite 7</span>
+    </div>
+  </div>
+  <div>
+    <p style="font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.6rem;">Deploy</p>
+    <div class="stack-row">
+      <span class="stack-tag">Docker</span>
+      <span class="stack-tag">Railway</span>
+      <span class="stack-tag">Render</span>
+      <span class="stack-tag">Heroku</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── QUICK START ── -->
+<section class="section" id="quickstart">
+  <h2 class="section-title">Quick Start</h2>
+  <p class="section-sub">Up and running in under two minutes.</p>
+  <div class="qs-block">
+    <div class="qs-tabs">
+      <button class="qs-tab active" onclick="switchTab(this,'tab-local')">Local Dev</button>
+      <button class="qs-tab"       onclick="switchTab(this,'tab-docker')">Docker</button>
+      <button class="qs-tab"       onclick="switchTab(this,'tab-deploy')">Deploy</button>
+    </div>
+    <div id="tab-local" class="qs-content active">
+<pre><span class="comment"># 1. Clone the repo</span>
+<span class="cmd">git clone</span> https://github.com/aelayette/sire-simulator.git
+<span class="cmd">cd</span> sire-simulator/backend
+
+<span class="comment"># 2. Install dependencies</span>
+<span class="cmd">npm install</span>
+
+<span class="comment"># 3. Configure environment (optional — defaults work for local dev)</span>
+<span class="cmd">cp</span> .env.example .env
+
+<span class="comment"># 4. Start the server</span>
+<span class="cmd">npm run dev</span>
+<span class="comment"># → Server running on http://localhost:8080</span></pre>
+    </div>
+    <div id="tab-docker" class="qs-content">
+<pre><span class="comment"># Clone and start with Docker Compose</span>
+<span class="cmd">git clone</span> https://github.com/aelayette/sire-simulator.git
+<span class="cmd">cd</span> sire-simulator/backend
+
+<span class="cmd">docker-compose up --build</span>
+<span class="comment"># → API available at http://localhost:8080</span></pre>
+    </div>
+    <div id="tab-deploy" class="qs-content">
+<pre><span class="comment"># One-click deploy options in backend/README.md</span>
+<span class="comment"># Railway  → railway.json included</span>
+<span class="comment"># Render   → render.yaml included</span>
+<span class="comment"># Heroku   → Procfile + app.json included</span>
+
+<span class="comment"># Required environment variables:</span>
+<span class="kw">PORT</span>=<span class="str">8080</span>
+<span class="kw">API_KEY</span>=<span class="str">your-secret-key</span>
+<span class="kw">ALLOWED_ORIGINS</span>=<span class="str">https://your-frontend.com</span>
+<span class="kw">REQUIRE_API_KEY</span>=<span class="str">true</span></pre>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── API PREVIEW ── -->
+<section class="section" id="api">
+  <h2 class="section-title">REST API</h2>
+  <p class="section-sub">Clean endpoints for session lifecycle management — pair with any frontend or automation tool.</p>
+  <div class="api-grid">
+    <div class="api-card">
+      <span class="api-method method-get">GET</span>
+      <span class="api-path">/health</span>
+      <p class="api-desc">Server status, uptime, and version info.</p>
+    </div>
+    <div class="api-card">
+      <span class="api-method method-post">POST</span>
+      <span class="api-path">/sessions</span>
+      <p class="api-desc">Create a new training session and receive a shareable session code.</p>
+    </div>
+    <div class="api-card">
+      <span class="api-method method-get">GET</span>
+      <span class="api-path">/sessions/:code</span>
+      <p class="api-desc">Retrieve full session state including scenario and participants.</p>
+    </div>
+    <div class="api-card">
+      <span class="api-method method-post">POST</span>
+      <span class="api-path">/sessions/:code/join</span>
+      <p class="api-desc">Join an existing session as a trainee.</p>
+    </div>
+    <div class="api-card">
+      <span class="api-method method-post">POST</span>
+      <span class="api-path">/sessions/:code/start</span>
+      <p class="api-desc">Instructor starts the scenario — events begin streaming.</p>
+    </div>
+    <div class="api-card">
+      <span class="api-method method-delete">DELETE</span>
+      <span class="api-path">/sessions/:code</span>
+      <p class="api-desc">Terminate and clean up a session.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p style="margin-bottom:0.5rem;">
+    <strong style="color:var(--text)">SIRE</strong> — Simulated Incident Response Environment
+  </p>
+  <p>
+    Built by <a href="https://github.com/aelayette" target="_blank" rel="noopener">aelayette</a> &amp; contributors ·
+    <a href="https://github.com/aelayette/sire-simulator" target="_blank" rel="noopener">GitHub</a> ·
+    <a href="https://github.com/aelayette/sire-simulator/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a> ·
+    NSCC Capstone 2026
+  </p>
+</footer>
+
+<script>
+  function switchTab(btn, targetId) {
+    btn.closest('.qs-block').querySelectorAll('.qs-tab').forEach(t => t.classList.remove('active'));
+    btn.closest('.qs-block').querySelectorAll('.qs-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(targetId).classList.add('active');
+  }
+</script>
+</body>
+</html>
